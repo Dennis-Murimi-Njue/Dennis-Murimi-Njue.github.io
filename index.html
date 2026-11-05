@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>My Portfolio</title>
+</head>
+<body>
+  <h1>Hi, I'm [Dennis Murimi Njue]</h1>
+  <p>I build data tools and web apps.</p>
+
+  <h2>Projects</h2>
+  <div id="projects"></div>
+
+  <script>
+    const projects = [
+      { title: "Student Grade Tracker", type: "CLI Tool",
+        result: "Class averages and grade reports in seconds.",
+        github: "https://github.com/Dennis-Murimi-Njue/grade-tracker" }
+    ];
+
+    const container = document.getElementById("projects");
+    for (const p of projects) {
+      container.innerHTML += `
+        <h3>${p.title} [${p.type}]</h3>
+        <p>${p.result}</p>
+        <a href="${p.github}">View code</a>`;
+    }
+  </script>
+</body>
+</html>
