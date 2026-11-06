@@ -4,28 +4,102 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>My Portfolio</title>
+
+  <!-- Fonts (optional: the CSS falls back to Georgia and Arial without them) -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:wght@600;700;800&family=Source+Serif+4:wght@400;600&display=swap" rel="stylesheet">
+
+  <!-- Your stylesheet: same folder, so the path is just the file name -->
+  <link rel="stylesheet" href="style.css">
 </head>
 <body>
-  <h1>Hi, I'm [Dennis Murimi Njue]</h1>
-  <p>I build data tools and web apps.</p>
+  <header class="intro wrap">
+    <h1>Your Name</h1>
+    <p>I build data tools and small web apps that replace slow manual work.</p>
+  </header>
 
-  <h2>Projects</h2>
-  <div id="projects"></div>
+  <main class="wrap">
+    <div class="projects-head">
+      <h2>Projects</h2>
+      <span id="count"></span>
+    </div>
+    <div class="grid" id="projects"></div>
+  </main>
+
+  <footer class="wrap">
+    <p>Built with plain HTML, CSS and JavaScript.</p>
+  </footer>
 
   <script>
+    // Same data shape as your Python list: a list of dictionaries (objects in JS)
     const projects = [
-      { title: "Student Grade Tracker", type: "CLI Tool",
-        result: "Class averages and grade reports in seconds.",
-        github: "https://github.com/Dennis-Murimi-Njue/student-grade-tracker" }
+      {
+        title:   "SMP Performance Coach",
+        problem: "Manually tracking fitness data and writing coaching notes took 30+ minutes per day.",
+        solution:"Automated pipeline that trains a classifier on 28 days of data, predicts daily goal achievement, and generates a coaching message.",
+        tools:   ["Python", "scikit-learn", "pandas", "FastAPI"],
+        result:  "Prediction + coaching in under 2 seconds. Exports weekly JSON report.",
+        github:  "https://github.com/brianotieno/smp-tracker",
+        type:    "ML + API"
+      },
+      {
+        title:   "Multi-Endpoint API Dashboard",
+        problem: "Three separate data sources with no unified view. Reporting was manual and inconsistent.",
+        solution:"Dashboard that fetches from three endpoints, processes each independently, and outputs a combined summary with protocol comparison.",
+        tools:   ["Python", "requests", "pandas"],
+        result:  "Single command produces a full multi-source report. Reduced prep time by 90%.",
+        github:  "https://github.com/brianotieno/api-dashboard",
+        type:    "Data Pipeline"
+      },
+      {
+        title:   "Browser-Based AI Coach",
+        problem: "Clients needed a way to get coaching feedback without installing software.",
+        solution:"Client-side JavaScript tool. Prediction engine and coaching generator run entirely in the browser. No server required.",
+        tools:   ["JavaScript", "DOM API", "Fetch API"],
+        result:  "Zero setup for end users. Works on any device with a browser.",
+        github:  "https://github.com/brianotieno/browser-coach",
+        type:    "Web Tool"
+      },
+      {
+        title:   "Student Grade Tracker",
+        problem: "Teachers recorded grades on paper and calculated averages by hand, which was slow and error-prone.",
+        solution:"Command-line tool that stores student scores, calculates averages, and assigns letter grades automatically.",
+        tools:   ["Python"],
+        result:  "Class averages and grade reports in seconds, with no manual arithmetic.",
+        github:  "https://github.com/brianotieno/grade-tracker",
+        type:    "CLI Tool"
+      }
     ];
 
-    const container = document.getElementById("projects");
-    for (const p of projects) {
-      container.innerHTML += `
-        <h3>${p.title} [${p.type}]</h3>
-        <p>${p.result}</p>
-        <a href="${p.github}">View code</a>`;
+    // "ML + API" -> "ml-api", so it can be used as a CSS class name
+    function slug(text) {
+      return text.toLowerCase().replace(/[^a-z]+/g, "-").replace(/^-|-$/g, "");
     }
+
+    // Turn one project object into one card of HTML
+    function cardHTML(p) {
+      const toolItems = p.tools.map(t => `<li>${t}</li>`).join("");
+      return `
+        <article class="card type-${slug(p.type)}">
+          <h3>${p.title}</h3>
+          <p class="type">${p.type}</p>
+          <dl>
+            <dt>Problem</dt><dd>${p.problem}</dd>
+            <dt>What I built</dt><dd>${p.solution}</dd>
+            <dt>Result</dt><dd>${p.result}</dd>
+          </dl>
+          <ul class="tools" aria-label="Tools used">${toolItems}</ul>
+          <a class="code" href="${p.github}">View code on GitHub</a>
+        </article>`;
+    }
+
+    // JS version of sorted(projects, key=lambda p: p["type"])
+    // [...projects] makes a copy first, because .sort() changes the array it's called on
+    const sorted = [...projects].sort((a, b) => a.type.localeCompare(b.type));
+
+    document.getElementById("projects").innerHTML = sorted.map(cardHTML).join("");
+    document.getElementById("count").textContent = `${projects.length} projects, sorted by type`;
   </script>
 </body>
 </html>
